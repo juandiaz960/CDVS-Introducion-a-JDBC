@@ -5,6 +5,8 @@
   
 <mapper namespace="edu.eci.cvds.sampleprj.dao.mybatis.mappers.ClienteMapper">
 
-
+<select parameterType="map" id="consultarClientes" resultMap="ClienteResult">
+		SENTENCIA SQL
+</select>
           	
 </mapper>
