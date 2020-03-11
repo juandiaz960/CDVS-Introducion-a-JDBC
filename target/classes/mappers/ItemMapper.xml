@@ -5,7 +5,55 @@
   
 <mapper namespace="edu.eci.cvds.sampleprj.dao.mybatis.mappers.ItemMapper">
 
-
+    <select parameterType="map" id="consultarItem" resultMap="ItemResult">
+        select       
+        i.id as item_id,
+        i.nombre as item_nombre,
+        i.descripcion as item_descripcion,
+        i.fechalanzamiento as item_fechalanzamiento ,
+        i.tarifaxdia as item_tarifaxdia ,
+        i.formatorenta as item_formatorenta ,
+        i.genero as item_genero,        
+        ti.id as item_tipoitem_id,
+        ti.descripcion as item_tipoitem_descripcion    
+        FROM VI_CLIENTES as c 
+        left join VI_ITEMRENTADO as ir on c.documento=ir.CLIENTES_documento 
+        left join VI_ITEMS as i on ir.ITEMS_id=i.id 
+        left join VI_TIPOITEM as ti on i.TIPOITEM_id=ti.id 
+        WHERE c.documento = #{idcli}
+    </select> 
     
+    <select parameterType="map" id="consultarItems" resultMap="ItemResult">
+        select        
+        i.id as item_id,
+        i.nombre as item_nombre,
+        i.descripcion as item_descripcion,
+        i.fechalanzamiento as item_fechalanzamiento ,
+        i.tarifaxdia as item_tarifaxdia ,
+        i.formatorenta as item_formatorenta ,
+        i.genero as item_genero,        
+        ti.id as item_tipoitem_id,
+        ti.descripcion as item_tipoitem_descripcion    
+        FROM VI_CLIENTES as c 
+        left join VI_ITEMRENTADO as ir on c.documento=ir.CLIENTES_documento 
+        left join VI_ITEMS as i on ir.ITEMS_id=i.id 
+        left join VI_TIPOITEM as ti on i.TIPOITEM_id=ti.id
+    </select>
+    
+    <resultMap type='Item' id='ItemResult'>
+        <id property='id' column='id'/>
+        <result property='nombre' column='nombre'/>
+        <result property='descripcion' column='descripcion'/>
+        <result property='fechaLanzamiento' column='fechalanzamiento'/>
+        <result property='tarifaxDia' column='tarifaxdia'/>
+        <result property='formatoRenta' column='formatorenta'/> 
+        <result property='genero' column='genero'/>
+        <association property='tipo' javaType = 'TipoItem' columnPrefix='tipoitem_'></association>
+    </resultMap>
+    
+    <insert parameterType="map" id="insertarItem">
+        insert into VI_ITEM(id,nombre,descripcion,fechalanzamiento,tarifaxdia,formatorenta,genero,TIPOITEM_id)
+        values (#{item.id},#{item.nombre},#{item.descripcion},#{item.fechal},#{item.tarifa},#{item.formator},#{item.genero},#{item.tipoi.id})        
+    </insert>
     
 </mapper>
