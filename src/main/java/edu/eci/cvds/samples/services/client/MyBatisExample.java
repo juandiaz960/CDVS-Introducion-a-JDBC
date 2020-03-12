@@ -16,11 +16,14 @@
  */
 package edu.eci.cvds.samples.services.client;
 
-
-
+import edu.eci.cvds.sampleprj.dao.mybatis.mappers.ClienteMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import static javax.xml.bind.DatatypeConverter.parseDate;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -54,29 +57,41 @@ public class MyBatisExample {
 
     /**
      * Programa principal de ejempo de uso de MyBATIS
+     *
      * @param args
-     * @throws SQLException 
+     * @throws SQLException
      */
     public static void main(String args[]) throws SQLException {
         SqlSessionFactory sessionfact = getSqlSessionFactory();
-
         SqlSession sqlss = sessionfact.openSession();
-
         
         //Crear el mapper y usarlo: 
-        //ClienteMapper cm=sqlss.getMapper(ClienteMapper.class)
-        //cm...
+        ClienteMapper cm = sqlss.getMapper(ClienteMapper.class);
+        // Consulta de todos los clientes.
+        System.out.println(cm.consultarClientes());
         
+        System.out.println(" ----------------------------------------------------------------------------------- ");
+        System.out.println(" ----------------------------------------------------------------------------------- ");
         
+        // Consulta del cliente de documento #6 llamado Elkin.
+        System.out.println(cm.consultarCliente(6));
+        
+        // Se agrega el itemRentado 15 "Pollo" al cliente #6 Elkin con las fechas respectivas. 
+        cm.agregarItemRentadoACliente(6, 3, dateFormat("12/03/2020"), dateFormat("12/05/2020"));
         
         sqlss.commit();
-        
-        
         sqlss.close();
-
-        
-        
     }
-
+    
+    public static Date dateFormat(String date) {
+        Date format;
+        try {
+            format = new SimpleDateFormat("dd/MM/yyyy").parse(date);
+        } catch (ParseException e) {
+            format = null;
+        }
+        return format;
+    }
+    
 
 }

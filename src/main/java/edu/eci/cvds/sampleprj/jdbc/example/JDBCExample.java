@@ -57,8 +57,8 @@ public class JDBCExample {
             System.out.println("-----------------------");
             
             
-            int suCodigoECI=2104587;
-            registrarNuevoProducto(con, suCodigoECI, "SU NOMBRE", 99999999);            
+            int suCodigoECI=2105536;
+            registrarNuevoProducto(con, suCodigoECI, "JuanCamilo", 99999999);            
             con.commit();
                         
             
@@ -80,7 +80,8 @@ public class JDBCExample {
      * @throws SQLException 
      */
     public static void registrarNuevoProducto(Connection con, int codigo, String nombre,int precio) throws SQLException{
-        String consulta = "INSERT INTO ORD_PRODUCTOS (codigo, nombre, precio) values (?,?,?)";          
+        String consulta = "INSERT INTO ORD_PRODUCTOS (codigo, nombre, precio) values (?,?,?)";
+        //con.getConnection();   
         //Crear preparedStatement
         PreparedStatement agregarProducto = con.prepareStatement(consulta);        
         //Asignar parámetros
@@ -89,34 +90,34 @@ public class JDBCExample {
         agregarProducto.setInt(3, precio);
         //usar 'execute'
         agregarProducto.execute();
-	con.commit();
         
+        con.commit();
     }
     
     /**
      * Consultar los nombres de los productos asociados a un pedido
      * @param con la conexión JDBC
      * @param codigoPedido el código del pedido
-     * @return np
-     * @throws SQLException
+     * @return 
+     * @throws java.sql.SQLException 
      */
-    public static List<String> nombresProductosPedido(Connection con, int codigoPedido) throws SQLException{
-        List<String> np=new LinkedList<>();
-        String query = "SELECT nombre FROM ORD_DETALLE_PEDIDO dp , ORD_PRODUCTOS p WHERE dp.producto_fk = p.codigo AND dp.pedido_fk = ?";
-        PreparedStatement npPedido = null;
+    public static List<String> nombresProductosPedido(Connection con, int codigoPedido) throws SQLException {
+        List<String> productos=new LinkedList<>();
+        String consulta = "SELECT nombre FROM ORD_DETALLE_PEDIDO dp , ORD_PRODUCTOS p WHERE dp.producto_fk = p.codigo AND dp.pedido_fk = ?";
+        PreparedStatement productosPedido = null;
 	//Crear prepared statement
-        npPedido = con.prepareStatement(query);
+        productosPedido = con.prepareStatement(consulta);
         //asignar parámetros
-        npPedido.setInt(1, codigoPedido);
+        productosPedido.setInt(1, codigoPedido);
         //usar executeQuery 
-        ResultSet rS = npPedido.executeQuery();
+        ResultSet rS = productosPedido.executeQuery();
         //Sacar resultados del ResultSet
         while (rS.next()) {
             String nombre= rS.getString("nombre");
-	    np.add(nombre);
-	}
+			productos.add(nombre);
+		}
         //Llenar la lista y retornarla
-        return np;
+        return productos;
     }
 
     
@@ -125,24 +126,28 @@ public class JDBCExample {
      * @param con
      * @param codigoPedido código del pedido cuyo total se calculará
      * @return el costo total del pedido (suma de: cantidades*precios)
-     * @throws SQLExeption
+     * @throws java.sql.SQLException
      */
-    public static int valorTotalPedido(Connection con, int codigoPedido) throws SQLException{
-        
-        String query = "SELECT SUM(cantidad*ORD_PRODUCTOS.precio) FROM ORD_DETALLE_PEDIDO,ORD_PRODUCTOS WHERE producto_fk = ORD_PRODUCTOS.codigo && pedido_fk = ?;";
+    public static int valorTotalPedido(Connection con, int codigoPedido)throws SQLException{
+        String consulta = "SELECT SUM(cantidad*ORD_PRODUCTOS.precio) FROM ORD_DETALLE_PEDIDO,ORD_PRODUCTOS WHERE producto_fk = ORD_PRODUCTOS.codigo && pedido_fk = ?;";
         PreparedStatement totalPedido = null;
         //Crear prepared statement
-        totalPedido = con.prepareStatement(query);
+        totalPedido = con.prepareStatement(consulta);
         //asignar parámetros
         totalPedido.setInt(1, codigoPedido);
         //usar executeQuery
         ResultSet rS = totalPedido.executeQuery();
         //Sacar resultado del ResultSet
-        int costoPedido = 0;
+        int costoTotal = 0;
         while(rS.next()){
-            costoPedido = rS.getInt(1);                
+            costoTotal = rS.getInt(1);                
         }
-        return costoPedido;
-    }    
+        return costoTotal;
+        
+    } 
+    
+
+    
+    
     
 }

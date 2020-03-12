@@ -6,7 +6,16 @@
 <mapper namespace="edu.eci.cvds.sampleprj.dao.mybatis.mappers.ItemMapper">
 
     <select parameterType="map" id="consultarItem" resultMap="ItemResult">
-        select       
+        select    
+        c.nombre,
+        c.documento,
+        c.telefono,
+        c.direccion,
+        c.email,
+        c.vetado,    
+        ir.id ,
+        ir.fechainiciorenta ,
+        ir.fechafinrenta ,    
         i.id as item_id,
         i.nombre as item_nombre,
         i.descripcion as item_descripcion,
@@ -24,7 +33,16 @@
     </select> 
     
     <select parameterType="map" id="consultarItems" resultMap="ItemResult">
-        select        
+        select    
+        c.nombre,
+        c.documento,
+        c.telefono,
+        c.direccion,
+        c.email,
+        c.vetado,    
+        ir.id ,
+        ir.fechainiciorenta ,
+        ir.fechafinrenta ,    
         i.id as item_id,
         i.nombre as item_nombre,
         i.descripcion as item_descripcion,
